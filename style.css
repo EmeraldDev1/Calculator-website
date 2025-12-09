@@ -22,18 +22,24 @@ h1 {
     margin-bottom: 25px;
 }
 
-.input-section input, .input-section button {
-    padding: 10px;
+.input-section input, .input-section button, .input-row input, .input-row button {
+    padding: 8px; /* Slightly smaller padding for better mobile fit */
     margin-right: 5px;
+    margin-bottom: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.input-section button {
+.input-section button, .input-row button {
     background-color: #28a745;
     color: white;
     cursor: pointer;
     border: none;
+    transition: background-color 0.2s;
+}
+
+.input-section button:hover, .input-row button:hover {
+    background-color: #1e7e34;
 }
 
 /* Person Card Styling */
@@ -50,6 +56,7 @@ h1 {
     color: #007bff;
     border-bottom: 2px solid #007bff;
     padding-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .totals div {
@@ -62,6 +69,8 @@ h1 {
     font-weight: bold;
     color: #dc3545;
     margin-top: 10px;
+    padding-top: 5px;
+    border-top: 1px dashed #6c757d;
 }
 
 .placeholder-text {
