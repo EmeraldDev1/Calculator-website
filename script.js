@@ -38,7 +38,7 @@ function updateUI() {
     peopleListDiv.innerHTML = ''; // Clear existing content
 
     const personNames = Object.keys(people);
-    
+
     if (personNames.length === 0) {
         peopleListDiv.innerHTML = '<p class="placeholder-text">Add a person to begin tracking items and fees.</p>';
         return;
@@ -46,6 +46,8 @@ function updateUI() {
 
     personNames.forEach(name => {
         const breakdown = calculatePersonTotal(name);
+        const person = people[name]; // Get the person object for item/fee listing
+        
         const card = document.createElement('div');
         card.className = 'person-card';
         
@@ -66,7 +68,7 @@ function updateUI() {
         // Breakdown Display
         const totalsDisplay = `
             <div class="totals">
-                <h3>Calculations for ${name}:</h3>
+                <h3>Calculations:</h3>
                 <p>Items: ${person.items.map(i => `${i.name} ($${i.cost.toFixed(2)})`).join(', ')}</p>
                 <p>Fees: ${person.fees.map(f => `${f.name} ($${f.cost.toFixed(2)})`).join(', ')}</p>
                 <hr>
@@ -87,40 +89,53 @@ function updateUI() {
     });
 }
 
-// Handlers for Input Buttons
+// *** FIX INCLUDED HERE: Robust check for name and existence ***
 function addPersonFromInput() {
     const nameInput = document.getElementById('personNameInput');
     const name = nameInput.value.trim();
+    
+    // Check if a valid name was entered AND if the person doesn't already exist
     if (name && !people[name]) {
-        people[name] = { items: [], fees: [] };
+        people[name] = { 
+            items: [], 
+            fees: [] 
+        };
         nameInput.value = ''; // Clear input
         updateUI();
+    } else if (people[name]) {
+        alert(`Person "${name}" is already added!`); 
     }
 }
 
 function addItemToPerson(personName) {
     const itemName = document.getElementById(`${personName}-itemName`).value.trim();
-    const itemCost = parseFloat(document.getElementById(`${personName}-itemCost`).value);
+    const itemCostElement = document.getElementById(`${personName}-itemCost`);
+    const itemCost = parseFloat(itemCostElement.value);
 
-    if (itemName && !isNaN(itemCost) && itemCost >= 0) {
+    if (itemName && !isNaN(itemCost) && itemCost > 0) { // Require cost > 0
         people[personName].items.push({ name: itemName, cost: itemCost });
         document.getElementById(`${personName}-itemName`).value = '';
-        document.getElementById(`${personName}-itemCost`).value = '';
+        itemCostElement.value = '';
         updateUI();
+    } else {
+        alert("Please enter a name and a valid cost greater than zero.");
     }
 }
 
 function addFeeToPerson(personName) {
     const feeName = document.getElementById(`${personName}-feeName`).value.trim();
-    const feeCost = parseFloat(document.getElementById(`${personName}-feeCost`).value);
+    const feeCostElement = document.getElementById(`${personName}-feeCost`);
+    const feeCost = parseFloat(feeCostElement.value);
 
     if (feeName && !isNaN(feeCost) && feeCost >= 0) {
         people[personName].fees.push({ name: feeName, cost: feeCost });
         document.getElementById(`${personName}-feeName`).value = '';
-        document.getElementById(`${personName}-feeCost`).value = '';
+        feeCostElement.value = '';
         updateUI();
+    } else {
+        alert("Please enter a name and a valid cost.");
     }
 }
 
-// Initial UI setup (if needed, though updateUI handles the initial state)
+// Initial UI setup
 document.addEventListener('DOMContentLoaded', updateUI);
